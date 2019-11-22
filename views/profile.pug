@@ -1,0 +1,167 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Matcha | Profile
+        script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous')
+        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous')
+        link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+        link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
+        link(rel="stylesheet", href="main.css")
+    body
+        .page-container
+            .content-wrap
+                header.mb-3
+                    nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+                        a.navbar-brand(href="/") MATCHA
+
+                        //- burger button on phone screens
+                        button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarSuppportedContent")
+                            span.navbar-toggler-icon
+
+                        //- targeted info by button
+                        #navbarSuppportedContent.collapse.navbar-collapse
+                            ul.navbar-nav.ml-auto
+                                li.nav-item.dropdown
+                                    a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown") More
+                                    .dropdown-menu(aria-labelledby="navbarDropdown")
+                                        a.dropdown-item(href="search") Match Me!
+                                        .dropdown-divider
+                                        a.dropdown-item(href="notifications") Notifications
+                                li.nav-item
+                                    a.nav-link(href="logout") Logout
+                                li.nav-item
+                                    a.nav-link(href="/") Home
+
+                //- profile info:
+                    //- Gender update
+                    //- preference update
+                    //- name, surname, email, password update
+                    //- update images (max 5)
+                    //- fame rating
+                    //- yes/no use location specific targeting
+                    //- add tags
+
+                //- profile images
+                .row.ml-0.mr-0
+                    .col
+                        p this is first image and name underneath
+                    .col
+                        p this is the other images
+
+                //- bio left, current info on the right (including current tags)
+                .row.ml-0.mr-0
+                    .col
+                        p bio here
+                    .col
+                        p info
+
+                //- more options, tab view
+                .row.ml-0.mr-0
+                    #nav-tab.nav.nav-tabs(role='tablist')
+                        a#nav-home-tab.nav-item.nav-link.active(data-toggle='tab' href='#nav-home' role='tab' aria-controls='nav-home' aria-selected='true') Associativity
+                        a#nav-profile-tab.nav-item.nav-link(data-toggle='tab' href='#nav-profile' role='tab' aria-controls='nav-profile' aria-selected='false') Advanced
+                        a#nav-contact-tab.nav-item.nav-link(data-toggle='tab' href='#nav-contact' role='tab' aria-controls='nav-contact' aria-selected='false') Location
+                    #nav-tabContent.tab-content
+
+                        #nav-home.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='nav-home-tab')
+                            //- modifying gender and preference
+                            form(action="", method="post")
+                                .form-group
+                                    label(for="selectGender") Gender
+                                    select#selectGender.form-control(name="gender_select")
+                                        option(value="Male") Male
+                                        option(value="Female") Female
+                                        option(value="Other") Other
+                                .form-group
+                                    label(for="selectPref") Partner Preference
+                                    select#selectPref.form-control(name="pref_select")
+                                        option(value="Male") Male
+                                        option(value="Female") Female
+                                        option(value="Bi-Sexual") Bi-Sexual
+                                .form-group
+                                    input.btn.btn-dark(type="submit", name="submit_pref")
+
+                        #nav-profile.tab-pane.fade(role='tabpanel' aria-labelledby='nav-profile-tab')
+                            //- modifying details
+                            form(action="", method="post")
+                                .form-group
+                                    label(for="name") Name
+                                    input#name.pl-1(type="text", name="name", placeholder="Jadon")
+                                .form-group
+                                    label(for="surname") Surname
+                                    input#surname.pl-1(type="text", name="surname", placeholder="Hansen")
+                                .form-group
+                                    label(for="age") Age
+                                    input#age.pl-1(type="text", name="age", placeholder="19")
+                                .form-group
+                                    label(for="email") Email Address
+                                    input#email.pl-1(type="email", name="email", placeholder="jhansen@gmailco.za")
+                                .form-group
+                                    label(for="password") New Password
+                                    input#password.pl-1(type="password", name="pass")
+                                    small#passwordHelpBlock.form-text.text-muted
+                                        | Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+                                .form-group
+                                    label(for="repeat") Repeat Password
+                                    input#repeat.pl-1(type="password", name="repeat_pass")
+                                .form-group
+                                    input.btn.btn-dark(type="submit", name="submit_details")
+
+                        #nav-contact.tab-pane.fade(role='tabpanel' aria-labelledby='nav-contact-tab')
+                            //- modify location yes/no
+                            form(action="", method="post")
+                                .form-group
+                                    .custom-control.custom-switch
+                                        input#location.custom-control-input(type="checkbox", name="location")
+                                        label.custom-control-label(for="location") Use location to match with users
+
+                //- add interest tags
+                .row.ml-0.mr-0
+                    h4 Add an interest tag
+                        form(action="add_tag", method="post")
+                            .form-row.align-items-center.ml-0.mr-0
+                                .col-auto
+                                    label.sr-only(for="inlineFormInputGroup") Username
+                                    .input-group.mb-2
+                                        .input-group-prepend
+                                            .input-group-text #
+                                        input#inlineFormInputGroup.form-control(type="text", name="tag", placeholder="interest tag" required)
+                                .col-auto
+                                    button.btn.btn-primary.mb-2(type="submit") Add tag
+
+
+            //- footer
+            footer.page-footer.font-small.mdb-color.pt-4.bg-light.text-dark
+                .container.text-center.text-md-left
+
+                    .row.text-center.text-md-left.mt-3.pb-3
+
+                        .col-md-6.col-lg-5.col-xl-4.mx-auto.mt-3
+                            h6.text-uppercase.mb-4.font-weight-bold About us
+                            p
+                                | In this day and age meeting new people and forming relationships is more difficult than ever,
+                                | wether it be from a busy job or a lack of opportunity. Matcha's vision is to offer young and old people the unique opportunity to meet
+                                | that potential special partner in life, all at your fingertips!
+                                | But remember, there's more to love than just emojis and midnight texts.
+
+                        .col-md-5.col-lg-4.col-xl-3.mx-auto.mt-3
+                            h6.text-uppercase.mb-4.font-weight-bold Get In Touch
+                            p
+                                a.text-info(href="http://instagram.com/jadon.hansen") Instagram
+                            p
+                                a.text-info(href="http://facebook.com/jadon.hansen.56") Facebook
+                            p
+                                a.text-info(href="https://mail.google.com/mail/u/0/#inbox?compose=new") ftmatcha@gmail.com
+                    hr
+                    .row
+                        .col.text-center
+                            p
+                                | &copy; 2019 Matcha. All rights reserved.
+                            a.text-info.github-link(href='https://jadonhansen')
+                                strong  @jadonhansen
+                            a.text-info.github-link(href='https://gstrauss42')
+                                strong  @gstrauss

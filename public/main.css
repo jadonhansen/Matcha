@@ -1,0 +1,79 @@
+/* used in the footer for every page */
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content-wrap {
+    padding-bottom: 26.25rem;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 26.25rem;
+}
+
+.github-link {
+    opacity: 0.75;
+}
+
+@media only screen and (max-width:  768px) {
+    footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 30rem;
+        font-size: 10px;
+    }
+    .content-wrap {
+        padding-bottom: 30rem;
+    }
+}
+
+/* for search user page */
+
+.search-profile {
+    width: 80px;
+    height: 70px;
+}
+
+@media only screen and (max-width:  640px) {
+    .search-profile-descrip {
+        font-size: 13px;
+    }
+}
+
+/* for notifications page */
+
+.notification-box {
+    min-height: 100px;
+    min-width: 100px;
+}
+
+.notif-heading {
+    font-size: 20px;
+}
+
+.notif-bg {
+    background: rgba(255, 127, 80, 0.9);
+}
+
+.notif-color {
+    color: black
+}
+
+@media only screen and (max-width:  768px) {
+    .toast {
+        font-size: 11px;
+    }
+    .notif-heading {
+        font-size: 15px;
+    }
+    .notification-box {
+        min-height: 40px;
+        padding-bottom: 2px;
+    }
+}
