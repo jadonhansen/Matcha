@@ -80,7 +80,7 @@ app.get("/notifications", (req,res) => {
 app.get("/profile", (req,res) => {
   res.render("profile");
 })
-// search_user
+// search
 app.get("/search", (req,res) => {
   res.render("search");
 })
@@ -130,6 +130,10 @@ app.use('/search_results', search_results);
 var search_user = require('./pages/search_user.js');
 app.use('/search_user', search_user);
 
+// search
+var search = require('./pages/search.js');
+app.use('/search', search);
+
 // add tag
 var add_tag = require('./pages/add_tag.js');
 app.use('/add_tag', add_tag);
@@ -138,13 +142,20 @@ app.use('/add_tag', add_tag);
 var logout = require('./pages/logout.js');
 app.use('/logout', logout);
 
+// update_profile
+var update_profile = require('./pages/update_profile.js');
+app.use('/update_profile', update_profile);
+
+
+
+
 // testing
 var test = require('./pages/test.js');
 app.use('/test', test);
 
-
-
-
+// updating email
+var email_update = require('./pages/email_update.js')
+app.use('/check/:var_words', email_update);
 
 // not the webpage youre looking for
 var user_confirm = require('./pages/user_confirm.js')
@@ -152,10 +163,6 @@ app.use('/:var_words', user_confirm);
 // app.get('/:var_words', function(req, res){
 //    res.send('these are not the ' + req.params.var_words + '\'s you are looking for');
 // });
-
-
-
-
 
 
 
