@@ -11,6 +11,12 @@ html(lang="en")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
         script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
+
+        script.
+            function submitlink() {
+                document.getElementById("link").submit();
+            }
+
     body
         //- modal for further options
         #modalOptions.modal.fade(tabindex="-1", role="dialog", aria-labelledby="OptModalLabel", aria-hidden="true")
@@ -21,11 +27,16 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="block_action", method="post")
+                            form(action="matched_profile", method="post")
                                 .form-group
+                                    input(type="hidden", name="_id", value= _id)
                                     button.btn.btn-primary(type="submit", name="block") Block user
-                            form(action="fake_action", method="post")
+                            hr
+                            form(action="matched_profile", method="post")
                                 .form-group
+                                    input(type="hidden", name="_id", value= _id)
+                                    input.form-control.mb-2(type="text", name="details", required)
+                                    small.form-text.text-muted.mb-1 Please specify a reason as to why you are reporting this user
                                     button.btn.btn-primary(type="submit", name="fake") Report as fake user	
                     .modal-footer
                         button.btn.btn-secondary(type="button", data-dismiss="modal") Close
@@ -39,7 +50,7 @@ html(lang="en")
                             span(aria-hidden="true") &times;
                     .modal-body
                         //- populate their images here
-                        img.modal-image(src="bg.jpg", alt="main-profile")
+                        img.modal-image(src= `data:image/*;base64,${one}`, alt="main-profile")
 
         //- modal for TWO profile image
         #twoMod.modal.fade(tabindex="-1", role="dialog", aria-labelledby="twoModalLabel", aria-hidden="true")
@@ -50,7 +61,7 @@ html(lang="en")
                             span(aria-hidden="true") &times;
                     .modal-body
                         //- populate their images here
-                        img.modal-image(src="pic01.jpg", alt="main-profile")
+                        img.modal-image(src= `data:image/*;base64,${two}`, alt="main-profile")
 
         //- modal for THREE profile image
         #threeMod.modal.fade(tabindex="-1", role="dialog", aria-labelledby="threeModalLabel", aria-hidden="true")
@@ -61,7 +72,7 @@ html(lang="en")
                             span(aria-hidden="true") &times;
                     .modal-body
                         //- populate their images here
-                        img.modal-image(src="pic02.jpg", alt="main-profile")
+                        img.modal-image(src= `data:image/*;base64,${three}`, alt="main-profile")
 
         //- modal for FOUR profile image
         #fourMod.modal.fade(tabindex="-1", role="dialog", aria-labelledby="fourModalLabel", aria-hidden="true")
@@ -72,7 +83,7 @@ html(lang="en")
                             span(aria-hidden="true") &times;
                     .modal-body
                         //- populate their images here
-                        img.modal-image(src="pic03.jpg", alt="main-profile")
+                        img.modal-image(src= `data:image/*;base64,${four}`, alt="main-profile")
 
         //- modal for FIVE profile image
         #fiveMod.modal.fade(tabindex="-1", role="dialog", aria-labelledby="fiveModalLabel", aria-hidden="true")
@@ -83,13 +94,13 @@ html(lang="en")
                             span(aria-hidden="true") &times;
                     .modal-body
                         //- populate their images here
-                        img.modal-image(src="pic04.jpg", alt="main-profile")
+                        img.modal-image(src= `data:image/*;base64,${five}`, alt="main-profile")
 
         .page-container.ml-0.mr-0
             .content-wrap
                 header.mb-3
                     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-                        a.navbar-brand(href="/") MATCHA
+                        a.navbar-brand(href="home") MATCHA
 
                         //- burger button on phone screens
                         button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarSuppportedContent")
@@ -101,78 +112,105 @@ html(lang="en")
                                 li.nav-item
                                     a.nav-link(href="notifications")
                                         i.fas.fa-bell.mt-1
+                                        if count > 0
+                                            span.badge.badge-dark= count
                                 li.nav-item.dropdown
                                     a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown") More
                                     .dropdown-menu(aria-labelledby="navbarDropdown")
                                         a.dropdown-item(href="profile") Profile
                                         .dropdown-divider
-                                        a.dropdown-item(href="search") Match Me!
+                                        form#link(action="search", method="post")
+                                            a.dropdown-item(href="javascript: submitlink()") Match Me!
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
-                                    a.nav-link(href="/") Home
+                                    a.nav-link(href="home") Home
 
                 //- profile info
                 .container
                     .container-fluid.mb-3
                         .row.mr-0.ml-0.custom-margin-pfp
                             .col-md-0
-                                img#main-profile-img.rounded-circle.img-main.mt-3(src="bg.jpg", alt="main-profile", data-toggle="modal", data-target="#main")
+                                if one
+                                    img#main-profile-img.rounded-circle.img-main.mt-3(src= `data:image/*;base64,${one}`, alt="main-profile", data-toggle="modal", data-target="#main")
+                                else
+                                    img#main-profile-img.rounded-circle.img-main.mt-3(src="user.jpg", alt="main-profile")
                             .col-md-0.mt-4.mr-2.custom-margin-bio
                                 strong
-                                    h3.custom-text-name= name
+                                    h3.custom-text-name= name + " " + surname
                                 h6.custom-text-rating= 'Rating ' + rating
                                 p.custom-text-bio= bio
                             .col-md-0.pt-4.mr-1
-                                //- if not liked before
-                                form(action="like", method="post")
-                                    .form-group
-                                        button.btn.btn-primary.btn-resize(type="submit", name="like") Like
+                                if liked == 0 && one
+                                    form(action="matched_profile", method="post")
+                                        input(type="hidden", name="_id", value= _id)
+                                        .form-group
+                                            button.btn.btn-primary.btn-resize(type="submit", name="like") Like
+                                else if liked == 1
+                                    form(action="matched_profile", method="post")
+                                        input(type="hidden", name="_id", value= _id)
+                                        .form-group
+                                            button.btn.btn-primary(type="submit", name="unlike") Unlike
                             .col-md-0.pt-4
                                 button#options.btn.btn-primary.btn-resize(data-toggle="modal", data-target="#modalOptions") More
 
-                            //- else if has liked before
-                            //- form(action="unlike", method="post")
-                            //-     .form-group
-                            //-         button.btn.btn-primary(type="submit", name="unlike") Unlike
+                    .container-fluid.mb-4
+                        if status == "offline"
+                            small.text-muted.status-off= 'last seen: ' + last_seen
+                        else if status == "online"
+                            small.text-muted.status-on online now
 
                     .container-fluid.mb-4
-                        //- if offline
-                        small.text-muted.status-off= 'last seen: ' + last_seen
-                        //- if online
-                        //- small.text-muted.status-on online now
-
+                        if connected == 0 && (image0 || image1 || image2 || image3 || image4)
+                            .jumbotron.remove-padd
+                                h4.display-4.connect-heading You two are not connected!
+                                p.lead Like this user and receive a like from them to start a connection.
+                        else if connected == 1
+                            .jumbotron.remove-padd
+                                h4.display-4.connect-heading You two are connected!
+                                hr.my-4
+                                p.connect-paragraph Open or start your chat :)
+                                form#viewChat(action="chat", method="get")
+                                    input(type="hidden", name="id", value= _id)
+                                    input.btn.btn-primary.btn-resize(type="submit", name="chat" , value="Chat")
+                        else
+                            .jumbotron.remove-padd
+                                h4.display-4.connect-heading You two are not connected!
+                                p.lead This user requires at least one image for you to be able to connect with them!
+                            
                     .container-fluid.mb-4
-                        //- if not connected
-                        //- .jumbotron.remove-padd
-                        //-     h4.display-4.connect-heading You two are not connected!
-                        //-     p.lead Like this user and receive a like from them to start a connection.
-                        //- if connected
-                        .jumbotron.remove-padd
-                            h4.display-4.connect-heading You two are connected!
-                            hr.my-4
-                            p.connect-paragraph Open or start your chat :)
-                            //- must have a specific identifier for each users connected chat
-                            a.btn.btn-primary.btn-resize(href="chat?k=code" role="button") Chat
-
-                    .container-fluid.mb-4
-                        .row.ml-0.mr-0
-                            .col-sm-3.col-md-3.pl-0.pr-1
-                                img#two.friends-images(src="pic01.jpg", alt="img-two", data-toggle="modal", data-target="#twoMod")
-                            .col-sm-3.col-md-3.pl-0.pr-1
-                                img#three.friends-images(src="pic02.jpg", alt="img-three", data-toggle="modal", data-target="#threeMod")
-                            .col-sm-3.col-md-3.pl-0.pr-1
-                                img#four.friends-images(src="pic03.jpg", alt="img-four", data-toggle="modal", data-target="#fourMod")
-                            .col-sm-3.col-md-3.pl-0.pr-1
-                                img#five.friends-images(src="bg.jpg", alt="img-five", data-toggle="modal", data-target="#fiveMod")
+                        if two || three || four || five
+                            h4= name + "'" + "s images"
+                            .row.ml-0.mr-0
+                                .col-sm-3.col-md-3.pl-0.pr-1
+                                    if two
+                                        img#two.friends-images(src= `data:image/*;base64,${two}`, alt="img-two", data-toggle="modal", data-target="#twoMod")
+                                .col-sm-3.col-md-3.pl-0.pr-1
+                                    if three
+                                        img#three.friends-images(src= `data:image/*;base64,${three}`, alt="img-three", data-toggle="modal", data-target="#threeMod")
+                                .col-sm-3.col-md-3.pl-0.pr-1
+                                    if four
+                                        img#four.friends-images(src= `data:image/*;base64,${four}`, alt="img-four", data-toggle="modal", data-target="#fourMod")
+                                .col-sm-3.col-md-3.pl-0.pr-1
+                                    if five
+                                        img#five.friends-images(src= `data:image/*;base64,${five}`, alt="img-five", data-toggle="modal", data-target="#fiveMod")
 
                     .container-fluid.mb-4
                         h5.about-heading About Me
+                        p.mb-1.pl-2.para-re= 'Name and Surname: ' + name + ' ' + surname
                         p.mb-1.pl-2.para-re= 'Gender: ' + gender
                         p.mb-1.pl-2.para-re= 'Looking for: ' + prefferances
                         p.mb-1.pl-2.para-re= 'Age: ' + age
-                        p.mb-1.pl-2.para-re= 'Tags: ' + tags
-                        p.mb-1.pl-2.para-re= 'Location usage: ' + location
+                        p.mb-1.pl-2.para-re.d-inline= "Tags: "
+                        if tags[0]
+                            for gold in tags
+                                p.d-inline= '#' + gold + " "
+                        else
+                            p.d-inline= "None"
+                        if location
+                            p.mb-1.pl-2.para-re Location usage: Yes
+                        else
+                            p.mb-1.pl-2.para-re Location usage: No
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark

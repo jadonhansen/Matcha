@@ -12,6 +12,12 @@ html(lang="en")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
         script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
+
+        script.
+            function submitlink() {
+                document.getElementById("link").submit();
+            }
+
     body
         //- modal for bio change
         #modalBio.modal.fade(tabindex="-1", role="dialog", aria-labelledby="bioModalLabel", aria-hidden="true")
@@ -22,13 +28,60 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="bio_change", method="post")
+                            form(action="update_profile", method="post")
                                 .form-group
-                                    textarea#bio_text.form-control(type="text", name="bio", rows="7")
-                                        | variable output here
-                                        | of their bio
+                                    if bio
+                                        textarea#bio_text.form-control(type="text", name="bio", rows="7")= bio
+                                    else
+                                        textarea#bio_text.form-control(type="text", name="bio", rows="7")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="bio_save") Save Changes	
+                    .modal-footer
+                        button.btn.btn-secondary(type="button", data-dismiss="modal") Close
+
+        //- modal for viewing stats
+        #modalStats.modal.fade.bd-example-modal-lg(tabindex="-1", role="dialog", aria-labelledby="statsModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg(role="document")
+                .modal-content
+                    .modal-header
+                        h5#statsModalLabel.modal-title Profile Statistics
+                        button.close(type="button", data-dismiss="modal", aria-label="Close")
+                            span(aria-hidden="true") &times;
+                    .modal-body
+                        u
+                            h5 Viewing stats
+                        .row.ml-0.mr-0
+                            .col-md-5
+                                p.statfont You have viewed:
+                                    if viewed
+                                        for data in viewed
+                                            p.statsmall.ml-2= data
+                                    else
+                                        p.statsmall.ml-2 None
+                            .col
+                                p.statfont Your profile was viewed by:
+                                    if views
+                                        for info in views
+                                            p.statsmall.ml-2= info
+                                    else
+                                        p.statsmall.ml-2 No views
+                        u
+                            h5 Like stats
+                        .row.ml-0.mr-0
+                            .col-md-5
+                                p.statfont You have liked:
+                                    if liked
+                                        for paper in liked
+                                            p.statsmall.ml-2= paper
+                                    else
+                                        p.statsmall.ml-2 None
+                            .col
+                                p.statfont Your profile was liked by:
+                                    if likes
+                                        for fax in likes
+                                            p.statsmall.ml-2= fax
+                                    else
+                                        p.statsmall.ml-2 No likes
                     .modal-footer
                         button.btn.btn-secondary(type="button", data-dismiss="modal") Close
 
@@ -41,9 +94,9 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="change_pfp", method="post")
+                            form(action="upload_picture", method="post")
                                 .form-group
-                                    input#main_img(type="file", name="main_img", accept="image/*")
+                                    input#main_img(type="file", name="image0", accept="image/*")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="main_save") Save Changes	
                     .modal-footer
@@ -58,9 +111,9 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="change_pfp", method="post")
+                            form(action="upload_picture", method="post", enctype="multipart/form-data")
                                 .form-group
-                                    input#two_img(type="file", name="two_img", accept="image/*")
+                                    input#two_img(type="file", name="picture", accept="image/*")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="two_save") Save Changes	
                     .modal-footer
@@ -75,9 +128,9 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="change_pfp", method="post")
+                            form(action="upload_picture", method="post")
                                 .form-group
-                                    input#three_img(type="file", name="three_img")
+                                    input#three_img(type="file", name="image2")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="three_save", accept="image/*") Save Changes	
                     .modal-footer
@@ -92,9 +145,9 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="change_pfp", method="post")
+                            form(action="upload_picture", method="post")
                                 .form-group
-                                    input#four_img(type="file", name="four_img")
+                                    input#four_img(type="file", name="image3")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="four_save", accept="image/*") Save Changes	
                     .modal-footer
@@ -109,9 +162,9 @@ html(lang="en")
                         button.close(type="button", data-dismiss="modal", aria-label="Close")
                             span(aria-hidden="true") &times;
                     .modal-body
-                            form(action="change_pfp", method="post")
+                            form(action="upload_picture", method="post")
                                 .form-group
-                                    input#five_img(type="file", name="five_img", accept="image/*")
+                                    input#five_img(type="file", name="image4", accept="image/*")
                                 .form-group
                                     button.btn.btn-primary(type="submit", name="five_save") Save Changes	
                     .modal-footer
@@ -121,123 +174,174 @@ html(lang="en")
             .content-wrap
                 header
                     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-                        a.navbar-brand(href="/") MATCHA
+                        a.navbar-brand(href="home") MATCHA
 
                         //- burger button on phone screens
                         button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarSuppportedContent")
                             span.navbar-toggler-icon
-
+                            
                         //- targeted info by button
                         #navbarSuppportedContent.collapse.navbar-collapse
                             ul.navbar-nav.ml-auto
                                 li.nav-item
                                     a.nav-link(href="notifications")
                                         i.fas.fa-bell.mt-1
-                                li.nav-item.dropdown
-                                    a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown") More
-                                    .dropdown-menu(aria-labelledby="navbarDropdown")
-                                        a.dropdown-item(href="search") Match Me!
+                                        if count > 0
+                                            span.badge.badge-dark= count
+                                li.nav-item
+                                    form#link(action="search", method="post")
+                                        a.nav-link(href="javascript: submitlink()") Match Me!
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
-                                    a.nav-link(href="/") Home
+                                    a.nav-link(href="home") Home
+
+                if !one && !two && !three && !four && !five
+                    #profile-notif.row-md-12.ml-0.mr-0.mb-0
+                        p.bg-danger.text-center.pl-2.pr-2.pt-1.pb-1 Please upload at least one profile image for other users to be able to like and connect with your profile.
 
                 //- profile info
                 .container
                     .container-fluid.mb-5
                         .row.mr-0.ml-0.custom-margin-pfp
                             .col-md-0
-                                img#main-profile-img.rounded-circle.img-main.mt-3(src="bg.jpg", alt="main-profile", data-toggle="modal", data-target="#modalMain")
+                                if one
+                                    img#main-profile-img.rounded-circle.img-main.mt-3(src= `data:image/*;base64,${one}`, alt="main-profile", data-toggle="modal", data-target="#modalMain")
+                                else
+                                    img#main-profile-img.rounded-circle.img-main.mt-3(src="user.jpg", alt="main-profile", data-toggle="modal", data-target="#modalMain")
                             .col-md-0.mt-4.custom-margin-bio
                                 strong
-                                    h3.custom-text-name Jadon Hansen
-                                h6.custom-text-rating Rating
-                                i#alter-bio.fas.fa-cog(data-toggle="modal", data-target="#modalBio")
-                                p.custom-text-bio stuff about me
+                                    h3.custom-text-name= username
+                                h6.custom-text-rating= "Rating " + rating 
+                                i#alter-bio.fas.fa-cog.mr-2(data-toggle="modal", data-target="#modalBio")
+                                button#stats.badge.badge-light.pt-0.pb-0.mb-1(name="stats", data-toggle="modal", data-target="#modalStats") View stats
+                                if bio
+                                    p.custom-text-bio= bio
+                                else
+                                    p.custom-text-bio Create a bio by clicking on the gear icon
 
                     //- other profile images
                     .container-fluid.mb-5
                         .row.mr-0.ml-0
                             .col-md-0
-                                img#profile-img-two.img-fluid.rounded-circle.img-prof.mr-2(src="pic01.jpg", alt="user_img2", data-toggle="modal", data-target="#modalTwo")
+                                if one && two
+                                    img#profile-img-two.img-fluid.rounded-circle.img-prof.mr-2(src= `data:image/*;base64,${two}`, alt="user_img2", data-toggle="modal", data-target="#modalTwo")
+                                else
+                                    img#profile-img-two.img-fluid.rounded-circle.img-prof.mr-2(src="temp.png", alt="user_img2", data-toggle="modal", data-target="#modalTwo")
                             .col-md-0
-                                img#profile-img-three.img-fluid.rounded-circle.img-prof.mr-2(src="pic02.jpg", alt="user_img3", data-toggle="modal", data-target="#modalThree")
+                                if one && two && three
+                                    img#profile-img-three.img-fluid.rounded-circle.img-prof.mr-2(src= `data:image/*;base64,${three}`, alt="user_img3", data-toggle="modal", data-target="#modalThree")
+                                else
+                                    img#profile-img-three.img-fluid.rounded-circle.img-prof.mr-2(src="temp.png", alt="user_img3", data-toggle="modal", data-target="#modalThree")
                             .col-md-0
-                                img#profile-img-four.img-fluid.rounded-circle.img-prof.mr-2(src="pic03.jpg", alt="user_img4", data-toggle="modal", data-target="#modalFour")
+                                if one && two && three && four
+                                    img#profile-img-four.img-fluid.rounded-circle.img-prof.mr-2(src= `data:image/*;base64,${four}`, alt="user_img4", data-toggle="modal", data-target="#modalFour")
+                                else
+                                    img#profile-img-four.img-fluid.rounded-circle.img-prof.mr-2(src="temp.png", alt="user_img4", data-toggle="modal", data-target="#modalFour")
                             .col-md-0
-                                img#profile-img-five.img-fluid.rounded-circle.img-prof.mr-2(src="pic04.jpg", alt="user_img5", data-toggle="modal", data-target="#modalFive")
+                                if one && two && three && four && five
+                                    img#profile-img-five.img-fluid.rounded-circle.img-prof.mr-2(src= `data:image/*;base64,${five}`, alt="user_img5", data-toggle="modal", data-target="#modalFive")
+                                else
+                                    img#profile-img-five.img-fluid.rounded-circle.img-prof.mr-2(src="temp.png", alt="user_img5", data-toggle="modal", data-target="#modalFive")
 
                     //- more options, tab view
                     .container-fluid.mb-5
                         #nav-tab.nav.nav-tabs(role='tablist')
-                            a#nav-home-tab.nav-item.nav-link.active(data-toggle='tab' href='#nav-home' role='tab' aria-controls='nav-home' aria-selected='true') Associativity
+                            a#nav-info-tab.nav-item.nav-link.active(data-toggle='tab' href='#nav-info' role='tab' aria-controls='nav-info' aria-selected='true') Current Info
+                            a#nav-home-tab.nav-item.nav-link(data-toggle='tab' href='#nav-home' role='tab' aria-controls='nav-home' aria-selected='false') Associativity
                             a#nav-profile-tab.nav-item.nav-link(data-toggle='tab' href='#nav-profile' role='tab' aria-controls='nav-profile' aria-selected='false') Advanced
                             a#nav-contact-tab.nav-item.nav-link(data-toggle='tab' href='#nav-contact' role='tab' aria-controls='nav-contact' aria-selected='false') Location
-                            a#nav-info-tab.nav-item.nav-link(data-toggle='tab' href='#nav-info' role='tab' aria-controls='nav-info' aria-selected='false') Current Info
                         #nav-tabContent.tab-content
 
-                            #nav-home.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='nav-home-tab')
+                            #nav-info.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='nav-info-tab')
+                                //- current info
+                                p.mt-2.ml-1= "Name and surname: " + name + " " + surname
+                                p.ml-1= "Age: " + age
+                                p.ml-1= "Email: " + email
+                                p.ml-1= "Gender: " + gender
+                                p.ml-1= "Preference: " + prefferances
+                                if location
+                                    p.ml-1 Location usage: Yes
+                                else
+                                    p.ml-1 Location usage: No
+ 
+                            #nav-home.tab-pane.fade(role='tabpanel' aria-labelledby='nav-home-tab')
                                 //- modifying gender and preference
                                 form(action="/update_profile", method="post")
                                     .form-row
                                         .col-md-5
-                                            label.mt-2(for="selectGender") Gender
-                                            select#selectGender.form-control.mb-2(name="gender_select")
-                                                option(value="Male") Male
-                                                option(value="Female") Female
-                                                option(value="Other") Other
+                                            label.mt-2.ml-1(for="selectGender") Gender
+                                            select#selectGender.form-control.mb-2.ml-1(name="gender_select")
+                                                if gender === "Male"
+                                                    option(value="Male", selected="selected") Male
+                                                else
+                                                    option(value="Male") Male
+                                                if gender === "Female"
+                                                    option(value="Female", selected="selected") Female
+                                                else
+                                                    option(value="Female") Female
+                                                if gender === "Other"
+                                                    option(value="Other", selected="selected") Other
+                                                else
+                                                    option(value="Other") Other
                                     .form-row
                                         .col-md-5
-                                            label(for="selectPref") Partner Preference
-                                            select#selectPref.form-control.mb-3(name="pref_select")
-                                                option(value="Male") Male
-                                                option(value="Female") Female
-                                                option(value="Bi-Sexual") Bi-Sexual
+                                            label.ml-1(for="selectPref") Partner Preference
+                                            select#selectPref.form-control.mb-3.ml-1(name="pref_select")
+                                                if prefferances === "Male"
+                                                    option(value="Male", selected="selected") Male
+                                                else
+                                                    option(value="Male") Male
+                                                if prefferances === "Female"
+                                                    option(value="Female", selected="selected") Female
+                                                else
+                                                    option(value="Female") Female
+                                                if prefferances === "Bi-Sexual"
+                                                    option(value="Bi-Sexual", selected="selected") Bi-Sexual
+                                                else
+                                                    option(value="Bi-Sexual") Bi-Sexual
                                     .form-row.mb-1
-                                        input.btn.btn-dark(type="submit", name="submit_pref", value="Save Changes")
+                                        input.btn.btn-dark.ml-2(type="submit", name="submit_pref", value="Save Changes")
 
                             #nav-profile.tab-pane.fade(role='tabpanel' aria-labelledby='nav-profile-tab')
                                 //- modifying details
                                 form(action="/update_profile", method="post")
                                     .form-group
-                                        label.mr-1.mt-3(for="name") Name
-                                        input#name.pl-1(type="text", name="name", placeholder="Jadon")
+                                        label.ml-2.mr-1.mt-4(for="name") Name:
+                                        input#name.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="name", placeholder= name)
                                     .form-group
-                                        label.mr-1(for="surname") Surname
-                                        input#surname.pl-1(type="text", name="surname", placeholder="Hansen")
+                                        label.ml-2.mr-1(for="surname") Surname:
+                                        input#surname.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="surname", placeholder= surname)
                                     .form-group
-                                        label.mr-1(for="age") Age
-                                        input#age.pl-1(type="text", name="age", placeholder="18+")
+                                        label.ml-2.mr-1(for="username") Username:
+                                        input#username.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="username", placeholder= username)
                                     .form-group
-                                        label.mr-1(for="email") Email Address
-                                        input#email.pl-1(type="email", name="email", placeholder="example@gmail.com")
+                                        label.ml-2.mr-1(for="age") Age:
+                                        input#age.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="age", placeholder= age)
                                     .form-group
-                                        label.mr-1(for="password") New Password
-                                        input#password.pl-1(type="password", name="pass")
-                                        small#passwordHelpBlock.form-text.text-muted
-                                            | Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emojis.
+                                        label.ml-2.mr-1(for="email") Email Address:
+                                        input#email.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="email", name="email", placeholder= email)
                                     .form-group
-                                        label.mr-1(for="repeat") Repeat Password
-                                        input#repeat.pl-1(type="password", name="repeat_pass")
+                                        label.ml-2.mr-1(for="password") New Password:
+                                        input#password.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="pass")
+                                        small#passwordHelpBlock.form-text.text-muted.ml-2
+                                            | Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters or emojis.
                                     .form-group
-                                        input.btn.btn-dark(type="submit", name="submit_details", value="Save Changes")
+                                        label.mr-2.ml-1(for="repeat") Repeat Password:
+                                        input#repeat.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="repeat_pass")
+                                    .form-group
+                                        input.btn.btn-dark.ml-1(type="submit", name="submit_details", value="Save Changes")
 
                             #nav-contact.tab-pane.fade(role='tabpanel' aria-labelledby='nav-contact-tab')
                                 //- modify location yes/no
-                                form(action="location_set", method="post")
+                                form#lock(action="update_profile", method="post")
                                     .form-group
-                                        .custom-control.custom-switch
-                                            input#location.custom-control-input(type="checkbox", name="location", checked, onchange="this.form.submit()")
-                                            label.custom-control-label.mt-2(for="location") Use location to match with users
-
-                            #nav-info.tab-pane.fade(role='tabpanel' aria-labelledby='nav-info-tab')
-                                //- current info
-                                p.mt-2 Name and surname:
-                                p Age:
-                                p Email:
-                                p Gender:
-                                p Preference:
-                                p Location usage:
+                                        .custom-control.custom-switch.ml-1
+                                            if location
+                                                input#locat.custom-control-input(type="checkbox", name="location_status", value="0", checked, onChange="this.form.submit();")
+                                            else
+                                                input#locat.custom-control-input(type="checkbox", name="location_status", value="1", onChange="this.form.submit();")
+                                            label.custom-control-label.mt-2(for="locat") Use location to match with users
 
                     //- add interest tags
                     .container-fluid.mb-5
@@ -252,7 +356,12 @@ html(lang="en")
                                         input#inlineFormInputGroup.form-control(type="text", name="tag", placeholder="interest tag" required)
                                 .col-auto
                                         button.btn.btn-primary.mb-2(type="submit") Add tag
-                        p Current tags: You have no tags related to your profile.
+                        if tags
+                            p.d-inline= "Current tags: "
+                            for gold in tags
+                                p.d-inline= '#' + gold + " "
+                        else
+                            p Current tags: You have no tags related to your profile.
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark

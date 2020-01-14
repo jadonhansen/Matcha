@@ -1,24 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var iplocation = require("iplocation").default;
 const app = express();
-var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-mongoose.connect(`mongodb+srv://gstrauss:qwerty0308@matcha-ch0yb.gcp.mongodb.net/test?retryWrites=true&w=majority`);
 app.use(bodyParser.urlencoded({ extended: true }));
 var Models = require("../models/models");
 var crypto = require('crypto');
 const requestIp = require('request-ip');
 
-// const ipMiddleware = function(req, res, next) {
-//    const clientIp = requestIp.getClientIp(req);
-//    console.log(1000);
-//    console.log(clientIp);
-//    Model.user.findOne({email:req.body.email})
-//    next();
-// };
+router.get("/", (req,res) => {
+   res.render("login");
+})
+ 
 
-router.post('/login', bodyParser.urlencoded(), function(req, res){
+router.post('/', bodyParser.urlencoded(), function(req, res){
    Models.user.findOne({ email: req.body.email }, function(err, user) {
       if(user)
       {
@@ -41,6 +35,10 @@ router.post('/login', bodyParser.urlencoded(), function(req, res){
             else
             res.send("Somethings wrong, please ensure you verified your account by following the link and that you typed your password in correctly");
                // res.redirect('/login');
+      }
+      else
+      {
+         res.render("login");
       }
    });
 });

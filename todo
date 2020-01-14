@@ -1,14 +1,40 @@
 ummm
 work...
 
-Gabriel:
-    - start using .env
-    - add the rest of the search variables and learn to get them to render onto the page
+Gabriel: (extras = ...)
+
+    - !!! got to be able to send the following info with each notification to the notification page --> username(who sent it), the time the notification happened, the notification message itself
+
+    - !!! SERIOUS ISSUE UPLOADING MORE THAN ONE IMAGE TO PROFILE PAGE. --> does not work if you're not using the first circle with the plus in it to upload
+
+    - !!!!!!  STATS:
+                I need an ARRAY OF PEOPLE who I have viewed 
+                I need an ARRAY OF PEOPLE who have viewed me
+                I need an ARRAY OF THE PEOPLE I have liked
+                I need an ARRAY OF THE PEOPLE who have liked me
+
+    - when putting a non-existant page name into the url it takes us to the reset password page --- it should be the login page 
+
+    - update location to work with postal codes or something like that
+
     - make fields secure
+
+    - check to make sure that report user functions like block user, maybe?
+
     - handle errors
-    - save location on login that was found
+
+    - create a viewed history of just names
+
+    - upload images
+    
+    - configure chat
+    
+    - updates last_seen variable when a person logs out
+    
+    .. - ajaxify
+
+    ... - set email port to be dynamic in emails
 
 Jadon:
-    - js function when switch is changed for location setting //this woulda confused me a bit if you hadnt put your name there bro XD <-- XDXDXD
-	- if user has location pref set to off: (currently to always display that its on)
-		do this:     input#location.custom-control-input(type="checkbox", name="location")
+    - be able to delete tags somehow
+    - get popups working (WHAT POPUPS???)

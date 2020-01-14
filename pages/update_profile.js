@@ -5,13 +5,41 @@ const bodyParser = require('body-parser');
 var crypto = require('crypto');
 var randomstring = require("randomstring");
 var nodeMailer = require('nodemailer');
-
-router.get('/', function(req, res){
-    res.redirect('/profile');
-});
+var multer = require('multer');
 
 router.post('/', bodyParser.urlencoded(), function(req, res){
-    
+    console.log(req.body.location_status); // for jadons debugging
+
+    if(req.body.location_status)
+    {
+        Models.user.findOneAndUpdate({email: req.session.name},
+            {"location_status": req.body.location_status},
+            // needs the passing of the correct path
+            function(err, doc){
+                doc.images.data = fs.readFileSync(imgPath);
+                doc.images.contentType = 'image/png';
+                doc.save(function(err, info){
+                    console.log(info);
+                });
+                console.log("updated  location status");
+        });
+    }
+    if(req.body.bio)
+    {
+        Models.user.findOneAndUpdate({ email : req.session.name },
+            { "bio" : req.body.bio }
+            , function(err, _update) {
+                console.log("updated bio");
+        });
+    }
+    if(req.body.username)
+    {
+        Models.user.findOneAndUpdate({ email : req.session.name },
+            { "username" : req.body.username }
+            , function(err, _update) {
+                console.log("updated username");
+        });
+    }
     if(req.body.name)
     {
         Models.user.findOneAndUpdate({ email : req.session.name },
@@ -55,8 +83,8 @@ router.post('/', bodyParser.urlencoded(), function(req, res){
     if(req.body.pass && req.body.repeat_pass && req.body.pass == req.body.repeat_pass)
     {
         var pass = crypto.pbkdf2Sync(req.body.pass, '100' ,1000, 64, `sha512`).toString(`hex`);
-        Models.user.findOneAndUpdate({ email : req.session.name },
-            { "password" : pass }
+        Models.user.findOneAndUpdate({ email : req.session.name }
+            ,{ "password" : pass }
             , function(err, _update) {
                 console.log("updated password");
         });
@@ -87,7 +115,7 @@ router.post('/', bodyParser.urlencoded(), function(req, res){
                 var mailOptions = {
                     to: req.body.email,
                     subject: 'Update Email',
-                    text: 'please follow this link to validate your account localhost:4040/check/' + safe
+                    text: 'please follow this link to validate your account localhost:8081/check/' + safe
                 };
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
@@ -98,8 +126,10 @@ router.post('/', bodyParser.urlencoded(), function(req, res){
             }        
         });
     }
-    res.redirect("/profile");
-
+    // porifle doc passed for rendering
+    Models.user.findOne({email : req.session.name}, function(err, ret){
+        res.redirect(('profile'));
+    });
 });
  
 //export this router to use in our index.js

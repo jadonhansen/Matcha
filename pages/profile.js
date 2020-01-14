@@ -1,17 +1,32 @@
 var express = require('express');
 var router = express.Router();
-var Model = require("../models/models");
-const bodyParser = require('body-parser');
+var Models = require("../models/models");
 
 router.get('/', function(req, res){
-   res.send('GET route on Profile');
-});
-router.post('/', bodyParser.urlencoded(), function(req, res){
-   var user = new Model.user ({
-      name: req.session.name,
-      tag: req.body.tag
+   Models.user.find({"likes" : req.session.name}, function(err, count){
+      Models.user.findOne({"email":req.session.name}, function(err, doc){
+         res.render("profile", {name : doc.name,
+                              surname:doc.surname,
+                              email:doc.email,
+                              username: doc.username,
+                              one :doc.images[0],
+                              two :doc.images[1],
+                              three :doc.images[2],
+                              four :doc.images[3],
+                              five :doc.images[4],
+                              views : doc.notifications.length,// i need an ARRAY OF PEOPLE who I have viewed and who have viewed me...
+                              liked: doc.likes.length,         // i need an ARRAY OF THE PEOPLE I have liked
+                              likes: count.length,             // i need an ARRAY OF THE PEOPLE who've liked me
+                              rating: doc.rating,
+                              gender: doc.gender,
+                              prefferances: doc.prefferances,
+                              age: doc.age,
+                              count: doc.notifications.length,
+                              tags: doc.tags,
+                              location: doc.location,
+                              bio: doc.bio});
+                           });
    });
-   tags.save();
 });
 
 //export this router to use in our index.js

@@ -12,12 +12,18 @@ html(lang="en")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
         script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
+
+        script.
+            function submitform(id) {
+                document.forms[id].submit();
+            }
+
     body
         .page-container
             .content-wrap
                 header.mb-3
                     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-                        a.navbar-brand(href="/") MATCHA
+                        a.navbar-brand(href="home") MATCHA
 
                         //- burger button on phone screens
                         button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarSuppportedContent")
@@ -29,14 +35,14 @@ html(lang="en")
                                 li.nav-item
                                     a.nav-link(href="notifications")
                                         i.fas.fa-bell.mt-1
-                                li.nav-item.dropdown
-                                    a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown") More
-                                    .dropdown-menu(aria-labelledby="navbarDropdown")
-                                        a.dropdown-item(href="profile") Profile
+                                        if count > 0
+                                            span.badge.badge-dark= count
+                                li.nav-item
+                                    a.nav-link(href="profile") Profile
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
-                                    a.nav-link(href="/") Home
+                                    a.nav-link(href="home") Home
 
                 //- advanced search options: age, fame rating, location, one/more tags
                 .container-fluid
@@ -59,17 +65,16 @@ html(lang="en")
                                     input.btn.btn-dark(type="submit", name="advanced_search", value="Match!")
                             .col
                                 h6 Include various tags
-
                                 //- each id for the checkboxes must be different
                                 .form-group.mb-0
-                                    .custom-control.custom-checkbox
-                                        input#various.custom-control-input(type="checkbox", name="various")
-                                        label.label-text.custom-control-label(for="various") Variable showing tag (e.g.)
-                                .form-group.mb-0
-                                    .custom-control.custom-checkbox
-                                        input#various1.custom-control-input(type="checkbox", name="various1")
-                                        label.label-text.custom-control-label(for="various1") Variable showing tag (e.g.)
-
+                                    if tags
+                                        for gold, k in tags
+                                            .custom-control.custom-checkbox
+                                                //- giving all checkboxes one name so that it will be put into an array for backend
+                                                input.custom-control-input(type="checkbox", name= gold, id= gold)
+                                                - awe = k;
+                                                label.label-text.custom-control-label(for= gold)= gold
+                                    input(type="hidden", name="tag_amount", value= awe)
                                 small.form-text.text-muted
                                     | To add/see more tags appear here make sure you have added them to your 
                                     a(href="profile") profile 
@@ -98,28 +103,55 @@ html(lang="en")
                                 input.btn.btn-dark.filter-btn(type="submit", name="filter_all", value="Go!")
 
                     hr
-                //- search results go here (!!!!!!!!!!if cant use alert then use media objects!!!!!!!!!)
-                .container-fluid
-                    .alert.alert-primary.alert-dismissible.fade.show.ml-4.mr-4(role="alert")
-                        .media
-                            a(href="matched_profile")
-                                img.rounded.mr-2.search-profile(src="pic02.jpg", alt="profile_image")
-                            .media-body
-                                a(href="matched_profile")
-                                    strong.custom-username Jadon Hansen
-                                p.search-profile-descrip.mb-0 Description and interests
-                        button.close(type="button" data-dismiss="alert" aria-label="Close")
-                            span(aria-hidden="true") &times;
-                    .alert.alert-primary.alert-dismissible.fade.show.ml-4.mr-4(role="alert")
-                        .media
-                            a(href="matched_profile")
-                                img.rounded.mr-2.search-profile(src="pic03.jpg", alt="profile_image")
-                            .media-body
-                                a(href="matched_profile")
-                                    strong.custom-username Gabriel Strauss
-                                p.search-profile-descrip.mb-0 Description and interests
-                        button.close(type="button" data-dismiss="alert" aria-label="Close")
-                            span(aria-hidden="true") &times;
+                //- advanced search results go here
+                if advanced_matches
+                    for data_one, j in basic_matches
+                        - id = "'" + data['id'] + "'";
+                        .container-fluid
+                            form(action="matched_profile", method="post", id= data['_id'])
+                                input(type="hidden", name="unique", value="1")
+                                input(type="hidden", name="_id", value= data_one['_id'])
+                                .alert.alert-primary.alert-dismissible.fade.show.ml-4.mr-4(role="alert")
+                                    .media
+                                        if data_one['images'][0]
+                                            a(href=`javascript: submitform(${id})`)
+                                                img.rounded.mr-2.search-profile(src= `data:image/*;base64,${data_one['images'][0]}`, alt="profile_image")
+                                        else
+                                            a(href=`javascript: submitform(${id})`)
+                                                img.rounded.mr-2.search-profile(src="user.jpg", alt="profile_image")
+                                        .media-body
+                                            a(href=`javascript: submitform(${id})`)
+                                                strong.custom-username= data_one['name'] + " " + data_one['surname']
+                                            p.search-profile-descrip.mb-0= data_one['bio']
+                                    button.close(type="button" data-dismiss="alert" aria-label="Close")
+                                        span(aria-hidden="true") &times;
+
+                //-basic search page results
+                else if basic_matches
+                    for data, i in basic_matches
+                        - id = "'" + data['id'] + "'";
+                        .container-fluid
+                            form(action="matched_profile", method="post", id= data['_id'])
+                                input(type="hidden", name="unique", value="1")
+                                input(type="hidden", name="_id", value= data['_id'])
+                                .alert.alert-primary.alert-dismissible.fade.show.ml-4.mr-4(role="alert")
+                                    .media
+                                        if data['images'][0]
+                                            a(href=`javascript: submitform(${id})`)
+                                                img.rounded.mr-2.search-profile(src= `data:image/*;base64,${data['images'][0]}`, alt="profile_image")
+                                        else
+                                            a(href=`javascript: submitform(${id})`)
+                                                img.rounded.mr-2.search-profile(src="user.jpg", alt="profile_image")
+                                        .media-body
+                                            a(href=`javascript: submitform(${id})`)
+                                                strong.custom-username= data['name'] + " " + data['surname']
+                                            p.search-profile-descrip.mb-0= data['bio']
+                                    button.close(type="button" data-dismiss="alert" aria-label="Close")
+                                        span(aria-hidden="true") &times;
+                
+                //- no suggestions
+                else
+                    h5.ml-4 No suggestions at this moment! Try an advanced search.
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark

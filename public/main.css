@@ -165,8 +165,8 @@ footer {
 /* for notifications page */
 
 .notification-box {
-    min-height: 100px;
-    min-width: 100px;
+    max-width: 900px;
+    width: 55%;
 }
 
 .notif-heading {
@@ -175,6 +175,10 @@ footer {
 
 .notif-bg {
     background: rgba(255, 127, 80, 0.9);
+}
+
+.notif {
+    height: 36px;
 }
 
 .notif-color {
@@ -187,10 +191,6 @@ footer {
     }
     .notif-heading {
         font-size: 15px;
-    }
-    .notification-box {
-        min-height: 40px;
-        padding-bottom: 2px;
     }
 }
 
@@ -212,6 +212,19 @@ footer {
 .img-prof {
     height: 100px;
     width: 100px;
+}
+
+#stats {
+    font-size: 13px;
+    height: 25px;
+}
+
+.statfont {
+    font-size: 17px;
+}
+
+.statsmall {
+    font-size: 14px;;
 }
 
 @media only screen and (max-width:  1050px) {

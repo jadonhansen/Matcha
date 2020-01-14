@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
 var Models = require("../models/models");
 
 router.get('/', function(req, res){
@@ -16,9 +15,6 @@ router.get('/', function(req, res){
                     res.redirect('/login');
                 });
         });
-});
-router.post('/', function(req, res){
-   res.send('POST route on Search_results');
 });
 
 //export this router to use in our index.js

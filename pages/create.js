@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
 const app = express()
-var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-mongoose.connect(`mongodb+srv://gstrauss:qwerty0308@matcha-ch0yb.gcp.mongodb.net/test?retryWrites=true&w=majority`);
 app.use(bodyParser.urlencoded({ extended: true }));
 var Model = require("../models/models");
 var crypto = require('crypto');
 var randomstring = require("randomstring");
 var nodeMailer = require('nodemailer');
+
+router.get('/', function (req, res) {
+   res.render('create');
+})
 
 router.post('/create', bodyParser.urlencoded(), function(req, res, next){
    Model.user.findOne({ email: req.body.email }, function(err, user) {
@@ -17,24 +19,28 @@ router.post('/create', bodyParser.urlencoded(), function(req, res, next){
       }
       if (user)
       {
-            var err = new Error('A user with that email has already registered. Please use a different email..')
-           err.status = 400;
-           return next(err);
+         var err = new Error('A user with that email has already registered. Please use a different email..')
+         err.status = 400;
+         return next(err);
       } 
       else
       {
+         console.log(req.body);
          var safe = crypto.pbkdf2Sync(randomstring.generate(), '100' ,1000, 64, `sha512`).toString(`hex`);
          var pass = crypto.pbkdf2Sync(req.body.password, '100' ,1000, 64, `sha512`).toString(`hex`);
       
          var _user = new Model.user ({
             name: req.body.name,
+            username: req.body.username,
             surname: req.body.surname,
             email: req.body.email,
             password: pass,
             age: req.body.age,
             gender: req.body.gender,
             prefferances: req.body.preferences,
-            verif: safe
+            verif: safe,
+            blocked : "",
+            notifications: "Welcome to Matcha"
          });
 
          _user.save(function(err){
@@ -58,7 +64,7 @@ router.post('/create', bodyParser.urlencoded(), function(req, res, next){
                   // should be replaced with real recipient's account
                   to: req.body.email,
                   subject: 'Email Confirmation',
-                  text: 'please follow this link to validate your account localhost:4040/' + safe
+                  text: 'please follow this link to validate your account localhost:8081/' + safe
                };
 
                transporter.sendMail(mailOptions, (error, info) => {
@@ -67,6 +73,7 @@ router.post('/create', bodyParser.urlencoded(), function(req, res, next){
                   }
                });
                res.redirect('/');
+               console.log("created account");
             }
          });
       }

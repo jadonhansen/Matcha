@@ -2,32 +2,89 @@ var express = require('express');
 var router = express.Router();
 var Models = require("../models/models");
 const bodyParser = require('body-parser');
-var mongoose = require("mongoose");
 
-var db = mongoose.connection;
-
-
-router.post('/', bodyParser.urlencoded(), function(req, res){
-    Models.user.find({email: req.session.name}, function(err, doc)
+router.get('/', function(req, res){
+    Models.user.findOne({email: req.session.name}, function(err, doc)
     {
-        console.log(doc);
-        Models.user.find({$and: [{gender: doc[0].prefferances}, {prefferances: doc[0].gender}]} , function(err, val){
-            console.log(val);
+        Models.user.find({$and: [{gender: doc.prefferances}, {prefferances: doc.gender}]} , function(err, val){
+            var tags = Array.from(doc.tags);
+            res.render('search', {
+                        "tags" : tags,
+                        "count" : doc.notifications.length,
+                        "basic_matches": Array.from(val)
+            });
         });
     });
-    res.redirect("/search");
 });
 
-// age : name="age"
-// nearby location : name="location"
-// similar fame rating : name="rating"
-// these fall under match submit button
+router.post('/', bodyParser.urlencoded(), function(req, res){
+    Models.user.findOne({email: req.session.name}, function(err, doc)
+    {
+        var p = 0;
+        Models.user.find({$and: [{gender: doc.prefferances}, {prefferances: doc.gender}]} , function(err, val){
+            let i = 0;
+            while(val[i])
+            {
+                while(val[i])
+                {
+                    if(req.body.age)
+                    {
+                        if(val[i].age != req.body.age)
+                        {
+                            val.splice(i, 1);
+                            break;
+                        }
+                    }
+                    if(req.body.rating)
+                    {
+                        // get personal fame rating to compare againts results then do some sort of averaging or range
+                        if(val[i].rating != doc.rating)
+                        {
+                            val.splice(i, 1);
+                            break;
+                        }
+                    }
+                    if(req.body.location)
+                    {
+                        // get personal location and then do some sort of location ranged based finding
+                        if(val[i].location != doc.location)
+                        {
+                            val.splice(i, 1);
+                            break;
+                        }
+                    }
+                    if(doc.blocked && doc.blocked.includes(val[i].email))
+                    {
+                        val.splice(i, 1);
+                        break;
+                    }
+                    
+                    //find a way to match the blocks to who is blocked for filtering 
+                    // if(req.body.reports)
+                    // {
+                        // val.splice(i, 1);
+                        // break;
+                    // }
 
-// filter by (age, location, fame rating, tags in common) : name="filter"
-//  order by (ascending, descending) : name="order"
-// these fall under the displaying options which is the go submit button
 
-//    res.render("search");
+                    // if(req.body.p)
+                    // if(req.body.)
+                    // {
+                    //     // input sort once arrray of tags has been given
+                    // }
+                    i++;
+                }
+            }
+            if(req.body.check)
+                console.log(req.body.check[0]);
+            res.render('search', {
+                        "tags" : doc.tags,
+                        "count" : doc.notifications.length,
+                        "basic_matches": Array.from(val)
+            });
+        });
+    });
+});
 
 //export this router to use in our index.js
 module.exports = router;
