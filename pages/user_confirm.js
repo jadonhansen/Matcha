@@ -4,23 +4,22 @@ var Models = require("../models/models");
 
 router.get('/', function(req, res){
    var check = req.originalUrl.substring(1);
-   Models.user.findOne({verif:check}, function(err, doc){
-      if(doc && doc.isverified == false){
-         Models.user.findOneAndUpdate(
-            { verif:check },
-            { $set : { isverified: "true"}}
-            , function(err, _update) {
-               res.redirect('/login');
-         });
-      }
+   Models.user.findOne({"verif":check, "isverified":"true"}, function(err, doc){
+      if(doc)
+         return res.render('reset_password', {url:check});
       else
       {
-         res.render("reset_password", {url: check});
+         // insert user check for forgot password link
+         Models.user.findOneAndUpdate({ verif:check }, { $set : { isverified: "true"}}, function(err, doc) {
+            if(doc && doc.email){
+               return res.render("login", {url: check});
+            }
+            return res.render("oops")
+         });
       }
-   })
+   });
 
-   // res.redirect('/login');
-});
+})
 
 //export this router to use in our index.js
 module.exports = router;

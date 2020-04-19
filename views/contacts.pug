@@ -1,9 +1,10 @@
+doctype html
 html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title Matcha | Notifications
+        title Matcha | Profile
         script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous')
         script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous')
@@ -11,12 +12,12 @@ html(lang="en")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
         script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
-    
+
         script.
-            function submitlink() {
-                document.getElementById("link").submit();
+            function submitlink(param) {
+                document.getElementById(param).submit();
             }
-    
+
     body
         .page-container.ml-0.mr-0
             .content-wrap
@@ -42,32 +43,51 @@ html(lang="en")
                                         a.dropdown-item(href="profile") Profile
                                         .dropdown-divider
                                         form#link(action="search", method="post")
-                                            a.dropdown-item(href="javascript: submitlink()") Match Me!
+                                            a.dropdown-item(href="javascript: submitlink('link')") Match Me!
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
                                     a.nav-link(href="home") Home
 
-                //- Chat interface
+                //- contacts
                 .container
-                    .container-fluid.task-box
-                        p.pt-1.pb-1= "Chatting with "
-                            a(href="matched_profile")= name + " " + surname
-                    .container-fluid.chat-box.pt-2.mb-3
-                        if messages
-                            for data, i in messages
-                                if data[user] == "me"
-                                    p#text-send.text-right= data[message]
-                                else if data[user] == "friend"
-                                    p#text-receive.text-left= data[message]
-                        else
-                            h6.text-center There are no messsages here! Start a chat
-                    .container-fluid.pl-0.pr-0.mb-3
-                        form(action="post_message", method="post")
-                            .input-group
-                                textarea#message.form-control(name="message_text", rows="2", placeholder="Type a message...")
-                                .input-group-append
-                                    button.btn.btn-secondary(type="submit", name="submit_message") Send
+                    .row.ml-0.mr-0
+                        .col
+                            .d-flex.justify-content-center.align-items-center(aria-live="polite" aria-atomic="true")
+                                if contacts.length > 0
+                                    strong.notif-heading.mb-2 
+                                        | You have existing chats with #{contacts.length} user
+                                        if contacts.length > 1
+                                            | s:
+                                        else
+                                            | :
+                                else
+                                    strong.notif-heading.mb-2 Chats
+                            hr.mb-4
+                            if contacts.length !== 0
+                                for person, j in contacts
+                                    - id = "'" + data['id'] + "'";
+                                    .container-fluid
+                                        form(action="matched_profile", method="post", id= data['_id'])
+                                            input(type="hidden", name="unique", value="1")
+                                            input(type="hidden", name="_id", value= person['_id'])
+                                            .alert.alert-primary.alert-dismissible.fade.show.ml-4.mr-4(role="alert")
+                                                .media
+                                                    if person['main_image']
+                                                        a(href=`javascript: submitform(${id})`)
+                                                            img.rounded.mr-2.search-profile(src= `data:image/*;base64,${person['main_image']}`, alt="profile_image")
+                                                    else
+                                                        a(href=`javascript: submitform(${id})`)
+                                                            img.rounded.mr-2.search-profile(src="user.jpg", alt="profile_image")
+                                                    .media-body
+                                                        a(href=`javascript: submitform(${id})`)
+                                                            strong.custom-username= person['username']
+                                                        p.search-profile-descrip.mb-0= person['bio']
+                                                button.close(type="button" data-dismiss="alert" aria-label="Close")
+                                                    span(aria-hidden="true") &times;
+                            //- no contacts
+                            else
+                                h6 You have no chats as of yet! Start a chat with someone to add them to this list.
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark

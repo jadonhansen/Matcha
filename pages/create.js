@@ -12,20 +12,17 @@ router.get('/', function (req, res) {
    res.render('create');
 })
 
-router.post('/create', bodyParser.urlencoded(), function(req, res, next){
+router.post('/create', bodyParser.urlencoded({extended: true}), function(req, res, next){
    Model.user.findOne({ email: req.body.email }, function(err, user) {
       if(err) {
-         //handle error here
+         return(res.redirect('/oops'));
       }
-      if (user)
+      else if (user)
       {
-         var err = new Error('A user with that email has already registered. Please use a different email..')
-         err.status = 400;
-         return next(err);
+         return(res.redirect('/oops'));
       } 
       else
       {
-         console.log(req.body);
          var safe = crypto.pbkdf2Sync(randomstring.generate(), '100' ,1000, 64, `sha512`).toString(`hex`);
          var pass = crypto.pbkdf2Sync(req.body.password, '100' ,1000, 64, `sha512`).toString(`hex`);
       
@@ -39,10 +36,25 @@ router.post('/create', bodyParser.urlencoded(), function(req, res, next){
             gender: req.body.gender,
             prefferances: req.body.preferences,
             verif: safe,
+            fame: 0,
             blocked : "",
-            notifications: "Welcome to Matcha"
+            location_status : '1'
          });
 
+         var present_time = Math.floor(Date.now() / 1000);
+         var _notif = new Model.notifications ({
+            email: req.body.email,
+            name: "Welcome",
+            content: "Welcome to matcha, may the love be with you",
+            time: present_time
+         })
+         _notif.save(function(err){
+            if(err)
+               console.log(err);
+            else
+               console.log("updated notifications");
+         })
+         
          _user.save(function(err){
             if(err)
                console.error(error);
@@ -64,7 +76,7 @@ router.post('/create', bodyParser.urlencoded(), function(req, res, next){
                   // should be replaced with real recipient's account
                   to: req.body.email,
                   subject: 'Email Confirmation',
-                  text: 'please follow this link to validate your account localhost:8081/' + safe
+                  text: 'please follow this link to validate your account localhost:' + process.env.port + '/' + safe
                };
 
                transporter.sendMail(mailOptions, (error, info) => {

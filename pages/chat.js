@@ -1,19 +1,56 @@
+const bodyParser = require('body-parser');
+var models = require("../models/models");
 var express = require('express');
-var http = require('../index');
 var router = express.Router();
-var io = require('socket.io')(http);
 
-router.get('/', function(req, res, next){
-  res.render('chat');
-
+// rendering chat page
+router.post('/', bodyParser.urlencoded({extended: true}), function(req, res) {
+  if(!req.session.name)
+    res.render('oops');
+  else
+  {
+    console.log(req.body)
+  // obtaining user info
+  models.user.findOne({"email" : req.session.name}, function(err, doc){
+    // obtaining chatter id
+    models.user.findOne({ "_id" : req.body.id}, function(err, chatter){
+      //creating new chat contact if not exists
+      if(req.body.chat)
+      {
+        models.user.updateOne({"email": req.session.name, $addToSet: {"contacts": chatter.email}}, function(err, contacts){
+          console.log("updated contacts");
+        });
+      }
+      // calculations for sending messages
+      if(req.body.sendMsg == 'sendMessage')
+      {
+        var present_time = Math.floor(Date.now() / 1000);
+        var message = new models.messages ({
+           message: req.body.message,
+           to: chatter.email,
+           from: doc.email,
+           time: present_time,
+           read: false
+        })
+        message.save(function(err){
+           if(err)
+              console.log(err);
+           else
+              console.log("updated notifications");
+        })
+      }
+      // finding all messages and rendering them
+      models.messages.find({"to": chatter.email, "from": doc.email}, function(err, messages){
+        models.messages.find({"to": doc.email, "from": chatter.email}, function(err, messages_from){
+          messages_from.forEach(element => {
+            element.read = true;
+          });
+          res.render('chat.pug', {"username" : chatter.username, "messages": messages, "messages_from" : messages_from, "id" : req.body.id});
+        });
+      });
+    });
+  })
+  }
 });
-
-io.on('connection', function(socket){
-  console.log("connected");
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
-});
-
 
 module.exports = router;

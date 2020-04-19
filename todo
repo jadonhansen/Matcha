@@ -1,40 +1,36 @@
-ummm
-work...
+Gabriel:
 
-Gabriel: (extras = ...)
+    NEW: (19 April 2020)
+        - notification of being liked is showing my own email. Whereas it should be the person who liked my email address
+        - change emails appearing in notifications to be usernames (not sure if this is a frontend fix..?)
+        - profile page: the liked array is not being generated. So the button remains as 'like' and doesn't change to 'unlike'
+        - send me 'advanced_matches' named variable when a filter/advanced search is made on Match Me! page
+        - try delete the uploaded files/images from the upload folder once they are loaded onto the DB
 
-    - !!! got to be able to send the following info with each notification to the notification page --> username(who sent it), the time the notification happened, the notification message itself
+    SEARCH PAGE:
+        - ordering
 
-    - !!! SERIOUS ISSUE UPLOADING MORE THAN ONE IMAGE TO PROFILE PAGE. --> does not work if you're not using the first circle with the plus in it to upload
+    NOTIFICATION PAGE:
+        - make notifications appear live
+            - is an ajax fix, if jquery works for the chat then we can just do that for this too client side
 
-    - !!!!!!  STATS:
-                I need an ARRAY OF PEOPLE who I have viewed 
-                I need an ARRAY OF PEOPLE who have viewed me
-                I need an ARRAY OF THE PEOPLE I have liked
-                I need an ARRAY OF THE PEOPLE who have liked me
-
-    - when putting a non-existant page name into the url it takes us to the reset password page --- it should be the login page 
-
-    - update location to work with postal codes or something like that
-
-    - make fields secure
-
-    - check to make sure that report user functions like block user, maybe?
-
-    - handle errors
-
-    - create a viewed history of just names
-
-    - upload images
-    
-    - configure chat
-    
-    - updates last_seen variable when a person logs out
-    
-    .. - ajaxify
-
-    ... - set email port to be dynamic in emails
+    EXTRA:
+        - handle errors (error message appears)
+        - make fields secure
+        - update location to work with postal codes or something like that
+        - might need to change login from email to username
 
 Jadon:
-    - be able to delete tags somehow
-    - get popups working (WHAT POPUPS???)
+    - sort out create account screen resizing
+    - test alles
+    - oops page
+
+ERROR CODES:
+    DONE:
+        - err 1: try again (incorrect login details or some such)
+        - err 2: access is denied please login first
+        - err 3: umm please try to be less cause this error isnt supposed to happen ;) (ie whatever you feel like making the generic error)
+        - err 4: check email for password reset link
+        - err 5: email already exists
+        - err 6: account isnt verified
+        - err 7: check email for verification link

@@ -4,39 +4,38 @@ var Models = require("../models/models");
 const bodyParser = require('body-parser');
 
 router.get('/', function(req, res){
-   Models.user.findOne({email: req.session.name}, function(err, doc){
-      res.render('notifications', {"notifications" : doc.notifications});
-   });
+   if(!req.session.name)
+   {
+      return(res.render("oops"));
+   }
+   else
+   {
+      Models.notifications.find({email: req.session.name}, function(err, doc){
+         res.render('notifications', {"notifications" : doc});
+      });
+   }
 });
 
-router.post('/', bodyParser.urlencoded(), function(req, res){
-   console.log(req.body)
-   Models.user.findOne({email: req.session.name}, function(err, doc){
-      if(req.body.dismiss == '')
-      {
-         var dismissed = doc.notifications.splice(req.body.indentifier, 1);
-         Models.user.findOneAndUpdate(
-            {email : req.session.name},
-            {$push : {old_notifications : dismissed}}, function(err, temp){
-               console.log("moved to the other section")
-            });
-         doc.save(console.log("dismissed"));
-         res.render('notifications', {"notifications" : doc.notifications, "old_notifications" : doc.old_notifications});
-         // update to move dismissed notifications to the seen section
-      }
-      else if(req.body.delete == '')
-      {
-         doc.old_notifications.splice(req.body.indentifier, 1);
-         doc.save(console.log("deleted"));
-         res.render('notifications', {"notifications" : doc.notifications, "old_notifications" : doc.old_notifications});
-         // give delete functionality, waiting for a unique section to delete from
-      }
-      else
-      {
-         console.log("\n\nCRITICAL ERROR CHECK NOTIFICATIONS FINAL ELSE, CAUSE WATAFAK\n\n");
-         res.redirect('notifications');
-      }
-   });
+router.post('/', bodyParser.urlencoded({extended: true}), function(req, res){
+   // if(req.body.dismiss == '')
+      // {
+         Models.notifications.find({email: req.session.name}, function(err, doc){
+            if(doc[req.body.identifier])
+            {
+               Models.notifications.deleteOne(
+                  {_id: doc[req.body.identifier]._id},
+                  function(err, temp){
+                     console.log("notification deleted" + temp)
+                  });
+            }
+            res.redirect('/notifications');
+         });
+      // }
+      // else
+      // {
+      //    console.log("\n\nCRITICAL ERROR CHECK NOTIFICATIONS FINAL\n\n");
+      //    res.redirect('notifications');
+      // }
 });
 
 //export this router to use in our index.js

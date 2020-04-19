@@ -8,24 +8,28 @@ const path      = require("path");
 var   session   = require('express-session');
 var   http      = require('http').createServer(app);
 
-require('dotenv').config()
-
 /*
 *  App Configuration
 */
+require('dotenv').config()
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+app.use(session({secret: process.env.secret, resave: true, saveUninitialized: true}));
 app.use(express.static('public'));
 app.use('/js', express.static('views/js'));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({secret: process.env.secret}));
-mongoose.connect('mongodb+srv://gstrauss:' + process.env.password +'@matcha-ch0yb.gcp.mongodb.net/test?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://gstrauss:' + process.env.password +'@matcha-ch0yb.gcp.mongodb.net/shell?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 /*
-* Page Handling
-*/
+ * Server Activation
+ */
+http.listen(process.env.port, function(){
+  console.log(`listening on port: ${process.env.port}`);
+});
 
-// var declarations
+/*
+* Page Variables
+*/
 var index           = require('./pages/index.js')
 var home            = require('./pages/home.js')
 var login           = require('./pages/login.js');
@@ -38,21 +42,26 @@ var profile         = require('./pages/profile.js');
 var update_profile  = require('./pages/update_profile.js');
 var email_update    = require('./pages/email_update.js')
 var add_tag         = require('./pages/add_tag.js');
-var bio_update      = require('./pages/bio_update.js');
 var upload_picture  = require('./pages/upload_picture.js');
 var notifications   = require('./pages/notifications.js');
 var search          = require('./pages/search.js');
+var contacts        = require('./pages/contacts.js');
 var matched_profile = require('./pages/matched_profile.js');
 var chat            = require('./pages/chat.js');
-var test            = require('./pages/test.js');
+var remove_tag      = require('./pages/remove_tag.js');
+var oops            = require('./pages/oops.js');
 
-// mini-app calls
+/*
+* Page Routing
+*/
+
 app.use('/', index)
 app.use('/home', home)
 app.use('/login', login);
 app.use('/create', create);
 app.use('/chat', chat);
 app.use('/forgot_password', forgot_password);
+app.use('/contacts', contacts);
 app.use('/matched_profile', matched_profile);
 app.use('/notifications', notifications);
 app.use('/profile', profile);
@@ -60,17 +69,9 @@ app.use('/search', search);
 app.use('/add_tag', add_tag);
 app.use('/logout', logout);
 app.use('/update_profile', update_profile);
-app.use('/bio_change', bio_update);
 app.use('/reset_password', reset_password);
 app.use('/upload_picture', upload_picture);
-app.use('/test', test);
 app.use('/check/:var_words', email_update);
 app.use('/:var_words', user_confirm);
-
-/*
- * Server Activation
- */
-
-http.listen(process.env.port, function(){
-  console.log(`Listening to requests on http://localhost:${process.env.port}`);
-});
+app.use('/remove_tag', remove_tag);
+app.use('/oops', oops);

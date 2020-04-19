@@ -5,24 +5,26 @@ const bodyParser = require('body-parser');
 var crypto = require('crypto');
 var randomstring = require("randomstring");
 var nodeMailer = require('nodemailer');
-var multer = require('multer');
 
-router.post('/', bodyParser.urlencoded(), function(req, res){
-    console.log(req.body.location_status); // for jadons debugging
-
+router.post('/', bodyParser.urlencoded({extended: true}), function(req, res){
     if(req.body.location_status)
     {
-        Models.user.findOneAndUpdate({email: req.session.name},
-            {"location_status": req.body.location_status},
-            // needs the passing of the correct path
-            function(err, doc){
-                doc.images.data = fs.readFileSync(imgPath);
-                doc.images.contentType = 'image/png';
-                doc.save(function(err, info){
-                    console.log(info);
+        if(req.body.location_status == "0")
+        {
+            Models.user.findOneAndUpdate({email: req.session.name},
+                {"location_status": "1"},
+                function(err, doc){
+                    console.log("updated location tracking policy");    
                 });
-                console.log("updated  location status");
-        });
+        }
+        else
+        {
+            Models.user.findOneAndUpdate({email: req.session.name},
+                {"location_status": "0"},
+                function(err, doc){
+                    console.log("updated location tracking policy");    
+                });
+        }
     }
     if(req.body.bio)
     {
@@ -115,7 +117,7 @@ router.post('/', bodyParser.urlencoded(), function(req, res){
                 var mailOptions = {
                     to: req.body.email,
                     subject: 'Update Email',
-                    text: 'please follow this link to validate your account localhost:8081/check/' + safe
+                    text: 'please follow this link to validate your account localhost:' + process.env.port + '/check/' + safe
                 };
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
