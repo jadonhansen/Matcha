@@ -4,23 +4,19 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title Matcha | Chat
-        script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous')
-        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous')
-        link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
-        script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
-        script(src="https://code.jquery.com/jquery-1.11.1.js") 
-        script(src="../pages/chat.js")
-        script(src="../socket.io/socket.io.js")
 
         script.
             function submitlink(param) {
                 document.getElementById(param).submit();
             }
+            function submitform(id) {
+                document.forms[id].submit();
+            }
 
-    body
+    body#chatBody
         .page-container.ml-0.mr-0
             .content-wrap
                 header.mb-3
@@ -35,20 +31,13 @@ html(lang="en")
                         #navbarSuppportedContent.collapse.navbar-collapse
                             ul.navbar-nav.ml-auto
                                 li.nav-item
-                                    a.nav-link(href="notifications")
-                                        i.fas.fa-bell.mt-1
-                                        if count > 0
-                                            span.badge.badge-dark= count
-                                li.nav-item.dropdown
-                                    a#navbarDropdown.nav-link.dropdown-toggle(href="#" role="button" data-toggle="dropdown") More
-                                    .dropdown-menu(aria-labelledby="navbarDropdown")
-                                        a.dropdown-item(href="profile") Profile
-                                        .dropdown-divider
-                                        form#link(action="search", method="post")
-                                            a.dropdown-item(href="javascript: submitlink('link')") Match Me!
-                                        .dropdown-divider
-                                        form#contacts(action="contacts" method="get")
-                                            a.dropdown-item(href="javascript: submitlink('contacts')") Chats
+                                    a#notifBell.nav-link(href="notifications")
+                                li.nav-item
+                                    a.nav-link(href="profile") Profile
+                                li.nav-item
+                                    a.nav-link(href="search") Match Me!
+                                li.nav-item
+                                    a.nav-link(href="contacts") Chats
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
@@ -57,28 +46,22 @@ html(lang="en")
                 //- Chat interface
                 .container
                     .container-fluid.task-box
-                        p.pt-1.pb-1= "Chatting with "
-                            a(href="matched_profile")= username
+                        - idStr = "'" + id + "'";
+                        form(action="matched_profile", method="post", id= id)
+                            input(type="hidden", name="unique", value="1")
+                            input(type="hidden", name="_id", value= id)
+                            p.pt-1.pb-1= "Chatting with "
+                                a.person(id=id href=`javascript: submitform(${idStr})`)= username
                     .container-fluid.chat-box.pt-2.mb-3
-                        if messages
-                            for data, i in messages
-                                #text-send.text-right
-                                    p.mb-0= data.message
-                                    p.msgInfo= "from " + data.from + " at " + data.time
-                        if messages_from
-                            for dataFrom, i in messages_from
-                                #text-receive.text-left
-                                    p.mb-0= dataFrom.message
-                                    p.msgInfo= "from " + dataFrom.from + " at " + dataFrom.time
-                        else
-                            h6.text-center There are no messsages here! Start a chat
+                        #messages
+                        #text-none
                     .container-fluid.pl-0.pr-0.mb-3
-                        form#messageForm(action="chat", method="post")
-                            .input-group
-                                textarea#messageText.formcontrol(rows="2", name="message", placeholder="Type a message...", required)
-                                input(type="hidden", name="id", value= id)
-                                .input-group-append
-                                    button#sendMsg.btn.btn-secondary(type="submit", name="sendMsg", value="sendMessage") Send
+                        .input-group
+                            textarea#messageText.formcontrol(rows="2", name="message", required)
+                            input#personEmail(type="hidden", name="email", value= email)
+                            input#personUsername(type="hidden", name="user", value= username)
+                            .input-group-append
+                                button#sendMsg.btn.btn-secondary(type="submit", name="sendMsg", value="sendMessage") Send
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark
@@ -109,53 +92,10 @@ html(lang="en")
                             a.text-info.github-link(href='https://gstrauss42')
                                 strong @gstrauss
 
-    //- script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js")
-
-    //- script.
-    //-     (function(){
-    //-         var element = function(id){
-    //-             return document.getElementById(id);
-    //-         }
-
-    //-         // get elements
-    //-         var messages = element('messages');
-    //-         var messageText = element('messageText');
-    //-         var sendMsg = element('sendMsg');
-
-    //-         // connect to socket.io
-    //-         var socket = io.connect('localhost:777/chat');
-
-    //-         // check for connection
-    //-         if (socket !== undefined) {
-    //-             console.log('Connected to socket...');
-
-    //-             // handles output
-    //-             socket.on('output', function(data) {
-    //-                 console.log(data);
-    //-                 if (data.length) {
-    //-                     for (var x = 0; x < data.length; x++) {
-    //-                         // build out message output
-    //-                         var message = document.createElement('div');
-    //-                         message.setAttribute('class', 'chat-message');
-    //-                         message.textContent = data[x].name + ": " + data[x].message;
-    //-                         messages.appendChild(message);
-    //-                         messages.insertBefore(message, messages.firstChild);
-    //-                     }
-    //-                 }
-    //-             });
-
-    //-             // handles input
-    //-             sendMsg.addEventListener('click', function(event) {
-    //-                     // emit to server input
-    //-                     if (messageText.value !== '') {
-    //-                         socket.emit('input', {
-    //-                             message:messageText.value
-    //-                         });
-    //-                         event.preventDefault();
-    //-                     } else {
-    //-                         console.log('Error: no message');
-    //-                     }
-    //-             });
-    //-         }
-
-    //-     })();
+        script(src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous")
+        script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
+        script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
+        script(src="https://code.jquery.com/jquery-1.11.1.js")
+        script(src="./js/load_notifs.js")
+        script(src="./js/load_messages.js")

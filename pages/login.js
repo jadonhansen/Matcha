@@ -1,50 +1,60 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
-var Models = require("../models/models");
-var crypto = require('crypto');
-const requestIp = require('request-ip');
+const Models = require('../models/models');
+const crypto = require('crypto');
+const axios = require('axios');
 
-router.get("/", (req,res) => {
-   res.render("login");
-})
+router.get('/', (req,res) => {
+   res.render('login');
+});
 
 router.post('/', bodyParser.urlencoded({extended: true}), function(req, res){
-   console.log(req.body)
-   Models.user.findOne({ 'email': req.body.email }, function(err, user) {
-      if(user)
-      {
-         var safe = crypto.pbkdf2Sync(req.body.password, '100' ,1000, 64, `sha512`).toString(`hex`);
 
-            if(user.password == safe && user.isverified == 1)
-            {
-               const clientIp = requestIp.getClientIp(req);
+   Models.user.findOne({ username: req.body.username }, { username : 1, password : 1, isverified : 1, email : 1 }, function(err, user) {
+      if (user) {
+         const safe = crypto.pbkdf2Sync(req.body.password, '100' ,1000, 64, `sha512`).toString(`hex`);
+
+            if (user.password == safe && user.isverified == true) {
                // ip tracking
-               Models.user.findOneAndUpdate({ email : req.body.email },
-               { "location" : clientIp },
-               function(err, _update){
-                      console.log("updated Ip Location");
+               axios.post(`https://ipinfo.io?token=${process.env.TOKEN}`, { json: true }).then(res => {
+                  if (res) {
+                     let ipLocat = `${res.data.city}, ${res.data.region}, ${res.data.country}, ${res.data.postal}`;
+                     console.log('ipLocat: ', ipLocat);
+
+                     Models.user.findOneAndUpdate({ username : req.body.username }, { location : ipLocat }, function(err, _update){
+                        if (err) {
+                           console.log('error updating location: ', err);
+                        } else {
+                           console.log('updated location');
+                        }
+                     });
+                  }
+               }).catch(error => {
+                  console.log('ipinfo error: ', error);
                });
                // online status
-               Models.user.findOneAndUpdate({ email : req.body.email },
-               { "status" : "online" },
-               function(err, _update){
-                   console.log("user set to online");
+               Models.user.findOneAndUpdate({ username : req.body.username }, { status : 'online' }, function(err, _update){
+                  if (err) {
+                     console.log('error updating status');
+                  } else {
+                     console.log('user set to online');
+                  }
                });
               //setting session
-               Models.user.findOne({email:req.body.email})
-               req.session.name = req.body.email;
+               req.session.name = user.email;
                res.redirect('/profile');
             }
+            else if (user.isverified !== true)
+               res.render('oops', {error: '6'})
             else
-               res.send("Somethings wrong, please ensure you verified your account by following the link and that you typed your password in correctly");
+               res.render('oops', {error: '1'});
       }
       else
       {
-         console.log(user);
-         res.render("login");
+         res.render('oops', {error: '1'});
       }
    });
 });

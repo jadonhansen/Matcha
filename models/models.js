@@ -1,8 +1,7 @@
-var mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const db = mongoose.connection;
 
-var db = mongoose.connection;
-
-var userSchema = new mongoose.Schema({ //This is where bugSchema is defined.
+var userSchema = new mongoose.Schema({
    name: String,
    username: String,
    bio: String,
@@ -13,8 +12,19 @@ var userSchema = new mongoose.Schema({ //This is where bugSchema is defined.
    gender: String,
    prefferances: String,
    fame_rating: String,
-   location: String,
    password: String,
+   verif: String,
+   isverified: { type: Boolean, default: false },
+   fame: Number,
+   status: String,
+   location: String,
+   location_status: String,
+   main_image: String,
+   image_one: String, 
+   image_two: String,
+   image_three: String,
+   image_four: String,
+   connected: String,
    contacts: [{
       type: String
    }],
@@ -24,40 +34,29 @@ var userSchema = new mongoose.Schema({ //This is where bugSchema is defined.
    views: [{
       type: String
    }],
-   verif: String,
    reports: [{
-      type: String
+      type: Object
    }],
-   isverified: { type: Boolean, default: false},
    tags: [{
       type: String
    }],
    likes: [{
       type: String
    }],
+   liked: [{
+      type: String
+   }],
    blocked: [{
       type: String
-   }],
-   fame: Number,
-   old_notifications: [{
-      type: String
-   }],
-   status: String,               //this is for if theyre online or offline. Will contain text "online" OR "offline-12:30"
-   location_status: String,
-   main_image: String,
-   image_one: String, 
-   image_two: String,
-   image_three: String,
-   image_four: String,
-   connected: String,
-   liked: String
+   }]
 });
 
 var notificationsSchema = new mongoose.Schema({
    email: String,
-   name:String,
+   name: String,
    content: String,
-   time: Number
+   time: String,
+   read: Boolean
 })
 
 var messagesSchema = new mongoose.Schema({
@@ -65,18 +64,21 @@ var messagesSchema = new mongoose.Schema({
    to: String,
    from: String,
    time: String,
+   sort_time: Number,
    read: Boolean
 });
 
-db.on("error", console.error.bind(console, "Connection error:"));
-db.once("open", function(callback) {
-   console.log("Connected to MongoDB"); /* Once the database connection has succeeded, the code in db.once is executed. */
+db.on('error', console.error.bind(console, 'Connection error:'));
+// Once the database connection has succeeded, the code in db.once is executed.
+db.once('open', function(callback) {
+   console.log('Connected to MongoDB');
 });
 
-var user = mongoose.model("users", userSchema); //This creates the Bug model.
-var notifications = mongoose.model("notifications", notificationsSchema);
-var messages = mongoose.model("messages", messagesSchema);
+// This creates the Bug model
+var user = mongoose.model('users', userSchema);
+var notifications = mongoose.model('notifications', notificationsSchema);
+var messages = mongoose.model('messages', messagesSchema);
 
-module.exports.user = user; /* Export the Bug model so index.js can access it. */
+module.exports.user = user;
 module.exports.notifications = notifications;
 module.exports.messages = messages;

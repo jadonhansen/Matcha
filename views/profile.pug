@@ -5,18 +5,11 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title Matcha | Profile
-        script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous')
-        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous')
-        link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
         link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
-        script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
         link(rel="stylesheet", href="main.css")
 
         script.
-            function submitlink(param) {
-                document.getElementById(param).submit();
-            }
             function submitlink(param) {
                 document.getElementById(param).submit();
             }
@@ -56,14 +49,14 @@ html(lang="en")
                         .row.ml-0.mr-0
                             .col-md-5
                                 p.statfont You have viewed:
-                                    if viewed
+                                    if viewed.length !== 0
                                         for data in viewed
                                             p.statsmall.ml-2= data
                                     else
                                         p.statsmall.ml-2 None
                             .col
                                 p.statfont Your profile was viewed by:
-                                    if views
+                                    if views.length !== 0
                                         for info in views
                                             p.statsmall.ml-2= info
                                     else
@@ -73,16 +66,16 @@ html(lang="en")
                         .row.ml-0.mr-0
                             .col-md-5
                                 p.statfont You have liked:
-                                    if likes
+                                    if likes.length !== 0
                                         for paper in likes
                                             p.statsmall.ml-2= paper
                                     else
                                         p.statsmall.ml-2 None
                             .col
                                 p.statfont Your profile was liked by:
-                                    if liked
+                                    if liked.length !== 0
                                         for fax in liked
-                                            p.statsmall.ml-2= fax['username']
+                                            p.statsmall.ml-2= fax
                                     else
                                         p.statsmall.ml-2 No likes
                     .modal-footer
@@ -187,16 +180,11 @@ html(lang="en")
                         #navbarSuppportedContent.collapse.navbar-collapse
                             ul.navbar-nav.ml-auto
                                 li.nav-item
-                                    a.nav-link(href="notifications")
-                                        i.fas.fa-bell.mt-1
-                                        if count > 0
-                                            span.badge.badge-dark= count
+                                    a#notifBell.nav-link(href="notifications")
                                 li.nav-item
-                                    form#contacts(action="contacts" method="get")
-                                        a.nav-link(href="javascript: submitlink('contacts')") Chats
+                                    a.nav-link(href="contacts") Chats
                                 li.nav-item
-                                    form#link(action="search", method="post")
-                                        a.nav-link(href="javascript: submitlink('link')") Match Me!
+                                    a.nav-link(href="search") Match Me!
                                 li.nav-item
                                     a.nav-link(href="logout") Logout
                                 li.nav-item
@@ -256,7 +244,7 @@ html(lang="en")
                                         img#profile-img-five.img-fluid.rounded-circle.img-prof.mr-2(src="temp.png", alt="user_img5", data-toggle="modal", data-target="#modalFive")
 
                     //- more options, tab view
-                    .container-fluid.mb-5
+                    .container-fluid.mb-4
                         #nav-tab.nav.nav-tabs(role='tablist')
                             a#nav-info-tab.nav-item.nav-link.active(data-toggle='tab' href='#nav-info' role='tab' aria-controls='nav-info' aria-selected='true') Current Info
                             a#nav-home-tab.nav-item.nav-link(data-toggle='tab' href='#nav-home' role='tab' aria-controls='nav-home' aria-selected='false') Associativity
@@ -266,15 +254,16 @@ html(lang="en")
 
                             #nav-info.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='nav-info-tab')
                                 //- current info
-                                p.mt-2.ml-1= "Name and surname: " + name + " " + surname
+                                p.mt-2.ml-1= "Name Surname: " + name + " " + surname
                                 p.ml-1= "Age: " + age
-                                p.ml-1= "Email: " + email
                                 p.ml-1= "Gender: " + gender
                                 p.ml-1= "Preference: " + prefferances
                                 if location_status == 1
                                     p.ml-1 Location usage: Yes
                                 else
                                     p.ml-1 Location usage: No
+                                p.ml-1= "Location: " + location
+                                p.ml-1= "Email: " + email
  
                             #nav-home.tab-pane.fade(role='tabpanel' aria-labelledby='nav-home-tab')
                                 //- modifying gender and preference
@@ -328,20 +317,28 @@ html(lang="en")
                                         input#username.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="username", placeholder= username)
                                     .form-group
                                         label.ml-2.mr-1(for="age") Age:
-                                        input#age.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="text", name="age", placeholder= age)
+                                        input#age.form-control.form-control-sm.pl-1.ml-2.col-md-4(type="number", name="age", placeholder= age)
+                                    .form-group.mb-4
+                                        input.btn.btn-dark.ml-1(type="submit", name="submit_details", value="Save Changes")
+                                    hr
+                                form(action="/update_profile/update_email", method="post")
                                     .form-group
                                         label.ml-2.mr-1(for="email") Email Address:
-                                        input#email.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="email", name="email", placeholder= email)
+                                        input#email.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="email", name="email", placeholder= email required)
+                                    .form-group.mb-4
+                                        input.btn.btn-dark.ml-1(type="submit", name="submit_email", value="Update Email")
+                                    hr
+                                form(action="/update_profile/update_password", method="post")
                                     .form-group
                                         label.ml-2.mr-1(for="password") New Password:
-                                        input#password.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="pass")
+                                        input#password.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="pass", minlength="8" required)
                                         small#passwordHelpBlock.form-text.text-muted.ml-2
-                                            | Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters or emojis.
+                                            | Your password must be at least 8 characters long and must not contain spaces.
                                     .form-group
                                         label.mr-2.ml-1(for="repeat") Repeat Password:
-                                        input#repeat.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="repeat_pass")
+                                        input#repeat.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="password", name="repeat_pass", minlength="8" required)
                                     .form-group
-                                        input.btn.btn-dark.ml-1(type="submit", name="submit_details", value="Save Changes")
+                                        input.btn.btn-dark.ml-1(type="submit", name="submit_password", value="Update Password")
 
                             #nav-contact.tab-pane.fade(role='tabpanel' aria-labelledby='nav-contact-tab')
                                 //- modify location yes/no
@@ -354,10 +351,18 @@ html(lang="en")
                                             else
                                                 input(type="hidden", name="location_status", value=location_status)
                                                 input#locat.custom-control-input(type="checkbox", name="location_status_check", value=1, onChange="this.form.submit();")
-                                            label.custom-control-label.mt-2(for="locat") Use location to match with users
+                                            label.custom-control-label.mt-2(for="locat") Location can be viewed by others
+                                form(action="profile/update_location", method="post")
+                                    .form-group
+                                        label.mr-2.ml-1(for="location") Current location:
+                                        input.form-control.form-control-sm.pl-1.ml-1.col-md-4(type="text", name="location_text", value= location, placeholder="City, Region, Country, Postal Code" required)
+                                    .form-group
+                                        input.btn.btn-dark.ml-1(type="submit", name="submit_location", value="Save Location")
+
+                    hr
 
                     //- add interest tags
-                    .container-fluid.mb-5
+                    .container-fluid.mb-5.mt-2
                         h5 Add an interest tag
                         form(action="add_tag", method="post")
                             .form-row.align-items-center
@@ -369,7 +374,7 @@ html(lang="en")
                                         input#inlineFormInputGroup.form-control(type="text", name="tag", placeholder="interest tag" required)
                                 .col-auto
                                         button.btn.btn-primary.mb-2(type="submit") Add tag
-                        if tags
+                        if tags.length !== 0
                             p.d-inline= "Current tags: "
                             for gold in tags
                                 form(action="remove_tag", method="post")
@@ -380,6 +385,18 @@ html(lang="en")
 
                         else
                             p Current tags: You have no tags related to your profile.
+
+                //- to avoid the warning in the console
+                if !one
+                    #profile-img-one
+                if !two
+                    #profile-img-two
+                if !three
+                    #profile-img-three
+                if !four
+                    #profile-img-four
+                if !five
+                    #profile-img-five
 
             //- footer
             footer.page-footer.font-small.mdb-color.bg-light.text-dark
@@ -410,4 +427,10 @@ html(lang="en")
                             a.text-info.github-link(href='https://gstrauss42')
                                 strong  @gstrauss
 
-    script(src="/js/profile_alterations.js")
+        script(src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous")
+        script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
+        script(src="https://kit.fontawesome.com/17df3da6b8.js", crossorigin="anonymous")
+        script(src="https://code.jquery.com/jquery-1.11.1.js")
+        script(src="./js/load_notifs.js")
+        script(src="./js/profile.js")
