@@ -1,9 +1,13 @@
 # Matcha
-Matcha is a recreation of the popular dating app, Tinder, except with Matcha we find your ideal match with a user filtering system using your prefferances that is fully customizable on the fly. You'll find our built-in chat feature
-quite refreshing to use with your match!
+Matcha is a recreation of the popular dating app, Tinder, except with Matcha we find your ideal match with a user filtering system using your prefferances that is fully customizable on the fly. You'll find our built-in chat feature quite refreshing to use with your match!
 
 # How to use
-- A .env file with various constants will be needed to run this application properly.
+- A .env file with various constants will be needed to run this application properly:
+	1. port=777
+	2. secret=128936GS71gd92JKJAF3701237
+	3. password= mongoDB database password
+	4. path= path to project root directory/Matcha/uploads/
+	5. TOKEN= token for IPInfo IP tracking (this requires a free IPInfo account)
 - In the root project directory in your terminal run the command 'npm install'.
 - In the same directory run the command 'npm start'.
 - Then navigate to 'localhost:777' in your browser.
