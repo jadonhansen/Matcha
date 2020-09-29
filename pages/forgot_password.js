@@ -23,7 +23,7 @@ router.post('/', bodyParser.urlencoded({extended: true}), function (req, res) {
                port: 465,
                secure: true,
                auth: {
-                  user: 'ftmatcha@gmail.com',
+                  user: process.env.smtp,
                   pass: process.env.password
                }
             });

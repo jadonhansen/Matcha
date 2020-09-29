@@ -5,7 +5,9 @@ Matcha is a recreation of the popular dating app, Tinder, except with Matcha we 
 - A .env file with various constants will be needed to run this application properly:
 	1. port=777
 	2. secret=128936GS71gd92JKJAF3701237
-	3. password= mongoDB database password
+	3. smtp= gmail account for sending emails
+	4. password= gmail account password
+	5. db= mongoDB connection string
 	4. path= path to project root directory/Matcha/uploads/
 	5. TOKEN= token for IPInfo IP tracking (this requires a free IPInfo account)
 - In the root project directory in your terminal run the command 'npm install'.

@@ -66,7 +66,7 @@ router.post('/update_email', bodyParser.urlencoded({extended: true}), function(r
                             port: 465,
                             secure: true,
                             auth: {
-                                user: 'ftmatcha@gmail.com',
+                                user: process.env.smtp,
                                 pass: process.env.password
                             }
                         });
