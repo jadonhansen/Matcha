@@ -178,7 +178,7 @@ function fetchSuggestions() {
 				if (ret.matches.length > 1)
 					loadStr = `<p class=\"ml-4 mb-3\">Showing ${ret.matches.length} suggestions</p>`;
 				else
-					loadStr = `<p class=\"ml-4 mb-3\">Showing ${ret.matches.length} suggestions</p>`;
+					loadStr = `<p class=\"ml-4 mb-3\">Showing ${ret.matches.length} suggestion</p>`;
 				$('#filterStr').html(loadStr);
 			} else {
 				$('#filterStr').html('<h6 class=\"ml-4 mb-3\">No suggestions at this moment! Try an advanced search.</h6>');
